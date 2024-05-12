@@ -9,6 +9,11 @@ dict_musics = {
     "Moonlit walk - Purrple Cat":"https://open.spotify.com/intl-fr/track/1UySjE9vUN6yAcUSgh1aaQ?si=c21c5be2915248d9"
 }
 
+dict_tabs = {
+    "Whenever, Wherever - Shakira": "D:\Python_projects\Piano_transpositions\Tabs\PDFs\Whenver, Wherever - Shakira.pdf",
+    "Moonlit walk - Purrple Cat": "D:\Python_projects\Piano_transpositions\Tabs\PDFs\Stressed out - Twenty one pilots.pdf"
+}
+
 
 def read_pdf(file_path):
     text = ""
@@ -28,7 +33,6 @@ def reset():
 
 def play_pause_button():
     playback_state = spotify_player.current_playback()
-    print(playback_state["item"]["artists"][0]["name"], playback_state["item"]["name"])
     if playback_state is None:
         st.error("No active playback found.")
     else:
@@ -51,23 +55,24 @@ def main():
     with st.expander("Spotify music", expanded=True):
         with st.container(height=200,  border=True):
             
-            track_name_chosen = st.selectbox("Select a track", options=list(dict_musics.keys()), index=None, key="track_selectbox")
+            track_chosen_selectbox = st.selectbox("Select a track", options=list(dict_musics.keys()), index=None, key="track_selectbox")
+
             # Display the selected option
-
-            
-
-            if track_name_chosen != None:
-                url_track = dict_musics[track_name_chosen]
+            if track_chosen_selectbox != None:
+                url_track = dict_musics[track_chosen_selectbox]
                 spotify_player.play_song_from_url(url_track)
-                st.write(track_name_chosen)
+                track_title = spotify_player.title_format(url=url_track)
+                st.write(track_title)
 
             elif spotify_player.current_playback() is not None:
                 playback_state = spotify_player.current_playback()
-                # print(playback_state["item"]["artists"][0]["name"], playback_state["item"]["name"])
-                st.write(playback_state["item"]["name"], "-", playback_state["item"]["artists"][0]["name"], "!")
+                track_uri = playback_state["item"]["uri"]
+                track_title = spotify_player.title_format(uri=track_uri)
+                # st.write(playback_state["item"]["name"], "-", playback_state["item"]["artists"][0]["name"], "!")
+                st.write(track_title)
 
             else:
-                print("fhdkhj", st.session_state.get(track_name_chosen))
+                print("Name of track chosen", st.session_state.get(track_chosen_selectbox))
 
             st.button("Play/Pause", on_click=play_pause_button)
                 
@@ -76,19 +81,25 @@ def main():
     with st.expander("Degrees"):
         st.container(height=300, border=True)
 
-    with st.expander("TABS"):
-        st.container(height=600, border=True)
+    with st.expander("TABS", expanded=True):
+       with st.container(height=600, border=True):
+            if spotify_player.current_playback() is not None:
+                playback_state = spotify_player.current_playback()
+                tabs_folder = os.getcwd()
+                track_name = track_chosen_selectbox
+                if track_name in list(dict_tabs.keys()):
+                    track_tab = dict_tabs[track_name]
+                    tab_path = os.path.join(tabs_folder, track_tab)
+                    tablature(tab_path)
+                else:
+                    st.write("No track selected")
+
+            else:
+                st.write("No track selected")
     
 
-
-
-
-
-def tab_area():
+def tablature(pdf_file_path):
     st.title("PDF Viewer")
-
-    # Specify the path to your PDF file
-    pdf_file_path = "D:\Python_projects\Piano_transpositions\Tabs\PDFs\Whenver, Wherever - Shakira.pdf"
 
     # Check if the file exists
     if os.path.exists(pdf_file_path):
@@ -104,5 +115,4 @@ def tab_area():
 
 if __name__ == "__main__":
     spotify_player = SpotifyFeatures()
-    track_pause = False
     main()
