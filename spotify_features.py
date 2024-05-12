@@ -17,7 +17,7 @@ class SpotifyFeatures(spotipy.Spotify):
         """
 
         if not (client_id and client_secret and redirect_uri):
-            print('Entering the "Transposition_exercises" App')
+            # print('Entering the "Transposition_exercises" App')
             client_id = os.getenv("SPOTIPY_CLIENT_ID")
             client_secret = os.getenv("SPOTIPY_CLIENT_SECRET")
             redirect_uri = "https://transposition_exercise"
@@ -35,7 +35,7 @@ class SpotifyFeatures(spotipy.Spotify):
             available_devices = devices['devices']
             if available_devices:
                 self.device_id = available_devices[0]['id']
-        print(self.device_id)
+        # print(self.device_id)
 
 
     def get_uri_from_url(self, url: str) -> str:
@@ -77,7 +77,7 @@ class SpotifyFeatures(spotipy.Spotify):
         """
 
         track_uri = self.get_uri_from_url(url)
-        self.start_playback(uris=[track_uri])
+        self.start_playback(device_id=self.device_id, uris=[track_uri])
 
         return track_uri 
     
@@ -103,6 +103,21 @@ class SpotifyFeatures(spotipy.Spotify):
         progress_time = self.current_user_playing_track()["progress_ms"]
 
         return progress_time
+    
+
+    def title_format(self, url):
+        """
+        Return the track title in the format "track_name - track_artist"
+        """
+        track_uri = self.get_uri_from_url(url)
+        track_info = self.track(track_uri)
+        track_name = track_info["name"]
+        track_artist = track_info["artists"][0]["name"]
+        track_title = f"{track_name} - {track_artist}"
+
+        return track_title
+
+
 
 
 # if __name__ == "__main__":
