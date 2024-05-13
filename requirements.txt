@@ -61,7 +61,6 @@ python-dotenv==1.0.1
 python-rtmidi==1.5.8
 pytweening==1.2.0
 pytz==2024.1
-pywin32==306
 pyzmq==26.0.3
 redis==5.0.4
 referencing==0.35.1
