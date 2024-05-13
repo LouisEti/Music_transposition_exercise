@@ -18,13 +18,17 @@ class SpotifyFeatures(spotipy.Spotify):
 
         if not (client_id and client_secret and redirect_uri):
             # print('Entering the "Transposition_exercises" App')
-            client_id = os.getenv("SPOTIPY_CLIENT_ID")
-            client_secret = os.getenv("SPOTIPY_CLIENT_SECRET")
-            redirect_uri = "https://transposition_exercise"
-        
-        super().__init__(auth_manager=SpotifyOAuth(client_id=client_id,
-                                                   client_secret=client_secret,
-                                                   redirect_uri=redirect_uri,
+            self.client_id = os.getenv("SPOTIPY_CLIENT_ID")
+            self.client_secret = os.getenv("SPOTIPY_CLIENT_SECRET")
+            self.redirect_uri = "https://transposition_exercise"
+        else:
+            self.client_id = client_id
+            self.client_secret = client_secret
+            self.redirect_uri = redirect_uri
+
+        super().__init__(auth_manager=SpotifyOAuth(client_id=self.client_id,
+                                                   client_secret=self.client_secret,
+                                                   redirect_uri=self.redirect_uri,
                                                    scope="user-modify-playback-state"))
         
         self.device_id = device_id
