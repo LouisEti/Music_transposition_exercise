@@ -105,7 +105,7 @@ class SpotifyFeatures(spotipy.Spotify):
         return progress_time
     
 
-    def title_format(self, url=none, uri=None):
+    def title_format(self, url=None, uri=None):
         """
         Return the track title in the format "track_name - track_artist" from url or uri
         """
@@ -115,29 +115,11 @@ class SpotifyFeatures(spotipy.Spotify):
             track_uri = uri
         else:
             print("Url or uri not given")
-            
+            return None
+
         track_info = self.track(track_uri)
         track_name = track_info["name"]
         track_artist = track_info["artists"][0]["name"]
         track_title = f"{track_name} - {track_artist}"
 
         return track_title
-
-
-
-
-# if __name__ == "__main__":
-#     spotify_player = SpotifyFeatures()
-    # track_uri = spotify_player.play_song_from_url("https://open.spotify.com/intl-fr/track/2lnzGkdtDj5mtlcOW2yRtG?si=3b7ae197790f4850")
-    # time.sleep(1)
-    # spotify_player.pause_playback()
-    # progression_time_current_track = spotify_player.current_user_playing_track()["progress_ms"]
-    # print(progression_time_current_track)
-    # time.sleep(2)
-    # spotify_player.start_playback(uris=[track_uri], position_ms=progression_time_current_track)
-    # print(spotify_player.current_user_playing_track()["item"]["duration_ms"])
-
-
-
-
-
